@@ -229,19 +229,20 @@ jobs:
       - name: Build unsigned xDrip4iOS (xcodebuild archive)
         run: |
           set -o pipefail
+          mkdir -p buildlog
           SCHEME="xdrip"
           if [ -d "xdrip.xcworkspace" ]; then
             xcodebuild archive -workspace xdrip.xcworkspace -scheme "$SCHEME" \
               -configuration Release -destination 'generic/platform=iOS' \
               -archivePath build/xdrip.xcarchive \
               CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO \
-              | tee buildlog/build.log
+              2>&1 | tee buildlog/build.log
           else
             xcodebuild archive -project xdrip.xcodeproj -scheme "$SCHEME" \
               -configuration Release -destination 'generic/platform=iOS' \
               -archivePath build/xdrip.xcarchive \
               CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO \
-              | tee buildlog/build.log
+              2>&1 | tee buildlog/build.log
           fi
 
       # Package the unsigned .app into a sideloadable IPA (Payload/*.app zip)
